@@ -5,14 +5,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.crm.model.entity.Users;
-import com.crm.repository.hibernate.UsersHRepository;
+import com.crm.repository.UsersRepository;
 import com.crm.service.UsersService;
 
 @Service
 public class UserServiceImpl implements UsersService {
 
 	@Autowired
-	private UsersHRepository usersHRepository;
+	private UsersRepository usersHRepository;
 	
 	@Override
 	public Users getPassword(String username) {

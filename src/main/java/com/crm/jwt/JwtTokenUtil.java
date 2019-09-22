@@ -1,6 +1,7 @@
 package com.crm.jwt;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.function.Function;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -60,7 +62,7 @@ public class JwtTokenUtil implements Serializable {
 	// generate token for user
 	public String generateToken(UserDetails userDetails) {
 		Map<String, Object> claims = new HashMap<>();
-		return doGenerateToken(claims, userDetails.getUsername());
+		return doGenerateToken(claims, userDetails);
 	}
 
 	// while creating the token -
@@ -69,9 +71,13 @@ public class JwtTokenUtil implements Serializable {
 	// 3. According to JWS Compact
 	// Serialization(https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41#section-3.1)
 	// compaction of the JWT to a URL-safe string
-	private String doGenerateToken(Map<String, Object> claims, String subject) {
-		return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-				.claim("roles", "admin").setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+	private String doGenerateToken(Map<String, Object> claims, UserDetails userDetails) {
+		
+		String[] authoritiesArray = userDetails.getAuthorities().stream()
+				.map(a -> a.getAuthority()).toArray(String[]::new);
+		
+		return Jwts.builder().setClaims(claims).setSubject(userDetails.getUsername()).setIssuedAt(new Date(System.currentTimeMillis()))
+				.claim("roles", authoritiesArray).setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
 				.signWith(SignatureAlgorithm.HS512, base64.decode(secret)).compact();
 	}
 

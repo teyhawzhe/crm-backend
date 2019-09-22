@@ -27,7 +27,7 @@ import com.crm.jwt.filter.JwtRequestFilter;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true , jsr250Enabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
@@ -74,7 +74,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	
-	@Bean
+	/*@Bean
 	public FilterRegistrationBean corsFilter() {
 		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration config = new CorsConfiguration();
@@ -86,6 +86,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
 		bean.setOrder(0);
 		return bean;
-	}
+	}*/
 	 
 }

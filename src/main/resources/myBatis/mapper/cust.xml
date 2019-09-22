@@ -22,4 +22,17 @@
 			<if test="custLevel!=null and custLevel!=''">and CUST_LEVEL = #{custLevel} </if>
 		</where>			
 	</select>
+	
+	<select id="getPage" resultType="com.crm.model.entity.TbCust" parameterType="com.crm.model.queryForm.CustForm">
+		select * from tb_cust
+		<where>
+			<if test="custId!=null and custId!=''">and CUST_ID = #{custId} </if>
+			<if test="regionId!=null and regionId!=''">and REGION_ID = #{regionId}</if>
+			<if test="personType!=null and personType!=''">and PERSON_TYPE = #{personType} </if>
+			<if test="locName!=null and locName!=''">and LOC_NAME = #{locName} </if>
+			<if test="engName!=null and engName!=''">and ENG_NAME = #{engName} </if>
+			<if test="custLevel!=null and custLevel!=''">and CUST_LEVEL = #{custLevel} </if>
+		</where>			
+	</select>
+	
 </mapper>

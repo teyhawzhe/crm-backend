@@ -5,15 +5,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.crm.common.HttpStatus;
 import com.crm.common.Result;
-import com.crm.exception.SqlConditionItemException;
+
+import lombok.extern.slf4j.Slf4j;
 
 @RestControllerAdvice
+@Slf4j
 public class ExceptionAdvice{
 
-	@ExceptionHandler(value = SqlConditionItemException.class)
-	public Result<String> errorHandle(SqlConditionItemException ex){
-		return new Result<String>(HttpStatus.exception,ex.getLocalizedMessage());	
-	}
 	@ExceptionHandler(value = IllegalArgumentException.class)
 	public Result<String> errorHandle(IllegalArgumentException ex){
 		return new Result<String>(HttpStatus.exception,ex.getLocalizedMessage());	
@@ -22,4 +20,5 @@ public class ExceptionAdvice{
 	public Result<String> errorHandle(Exception ex){
 		return new Result<String>(HttpStatus.exception,ex.getMessage());	
 	}
+	
 }

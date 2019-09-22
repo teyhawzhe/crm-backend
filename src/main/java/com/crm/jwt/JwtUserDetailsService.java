@@ -1,16 +1,22 @@
 package com.crm.jwt;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.crm.model.entity.Roles;
 import com.crm.model.entity.Users;
-import com.crm.repository.hibernate.UsersHRepository;
+import com.crm.repository.RolesRepository;
+import com.crm.repository.UsersRepository;
 import com.crm.service.UsersService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -20,26 +26,34 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtUserDetailsService implements UserDetailsService {
 
 	@Autowired
-	private UsersHRepository usersHRepository;
+	private UsersRepository usersRepository;
+	
+	@Autowired
+	private RolesRepository rolesRepository;
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
-		/*if ("admin".equals(username)) {
-			return new User("admin", "$2a$10$eyQYIqFxZR7hs8uhaqpxFO9HsvwUbmpZP1Q9zuABgezA45EZosyUm",
-					new ArrayList<>());
-		} else {
-			throw new UsernameNotFoundException("User not found with username: " + username);
-		}*/
 		
-		Users users = usersHRepository.getOne(username);
+		Users users = usersRepository.getOne(username);
 		
 		if(null!=users) {
-			return new User(users.getUsername(), users.getPassword(),new ArrayList<>());
+			return new User(users.getUsername(), users.getPassword(),getRoles(username));
 		}else {
 			throw new UsernameNotFoundException("User not found with username: " + username);
 		}
 		
 	}
-
+	
+	public Collection<GrantedAuthority> getRoles(String username){
+		List<Roles> roles = rolesRepository.getAllRoleByUsername(username);
+		
+		List<GrantedAuthority> grantedAuthority = new ArrayList<GrantedAuthority>();
+		
+		for(Roles index : roles) {
+			grantedAuthority.add(new SimpleGrantedAuthority(index.getId().getRole()));
+		}
+		
+		return grantedAuthority;
+	}
 }

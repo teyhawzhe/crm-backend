@@ -1,5 +1,6 @@
 package com.crm.model.converter;
 
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,15 @@ public class CustConverter extends AbstractModelMapper<TbCust, CustDto> {
 	public CustDto doConvert(TbCust source) {
 		// TODO Auto-generated method stub
 		ModelMapper model = new ModelMapper();
+		
+		if(StringUtils.isBlank(source.getCustId())) {
+			source.setCustId(source.getId().getCustId());
+		}
+		if(StringUtils.isBlank(source.getRegionId())) {
+			source.setRegionId(source.getId().getRegionId());
+		}
+		
+		
 		return model.map(source,CustDto.class);
 	}
 
