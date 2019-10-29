@@ -36,6 +36,18 @@ public class TbCust implements Serializable {
 	 */
 	private static final long serialVersionUID = -4881882013948655951L;
 
+	@Transient
+	private String custId;
+
+	@Transient
+	private String regionId;
+
+	@Transient
+	private String custLevelName;
+	
+	@Transient
+	private String regionIdName;
+	
 	@EmbeddedId
 	private TbCustPK id;
 
@@ -47,7 +59,6 @@ public class TbCust implements Serializable {
 	@Column(name="ADDRESS_REGION")
 	private String addressRegion;
 
-	
 	@Column(name="ADDRESS_TOWNSHIP")
 	private String addressTownship;
 
@@ -149,8 +160,6 @@ public class TbCust implements Serializable {
 	@Size(min = 10 , max = 10 , message = "身分證長度只能有10個字元")
 	@Column(name="PERSON_ID" , unique = true)
 	private String personId;
-	
-	
 
 	@Column(name="PERSON_TYPE")
 	private String personType;
@@ -223,10 +232,4 @@ public class TbCust implements Serializable {
 	@Column(name="ZIP_CODE")
 	private String zipCode;
 
-	@Transient
-	private String custId;
-
-	@Transient
-	private String regionId;
-	
 }

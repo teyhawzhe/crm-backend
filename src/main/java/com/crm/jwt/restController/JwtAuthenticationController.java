@@ -1,6 +1,5 @@
 package com.crm.jwt.restController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -12,6 +11,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +29,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 
+@CrossOrigin
 @RestController
 @Slf4j
 public class JwtAuthenticationController {
@@ -54,10 +55,9 @@ public class JwtAuthenticationController {
 	public ResponseEntity<Result<UserInfo>> getToken(@RequestParam("token") String token){
 		
 		Claims claims = Jwts.parser().setSigningKey(base64.decode(secret)).parseClaimsJws(token.replace("Bearer ", "")).getBody();
-		log.info((String) claims.get("roles"));
-		log.info(claims.getSubject());
-		List<String> roles = new ArrayList<String>();
-		roles.add((String) claims.get("roles"));
+	 
+		List<String> roles = (List<String>) claims.get("roles");
+		
 		UserInfo userInfo = new UserInfo();
 		userInfo.setName(claims.getSubject());
 		userInfo.setRoles(roles);
@@ -74,13 +74,13 @@ public class JwtAuthenticationController {
 		return ResponseEntity.ok(new Result<String>(HttpStatus.ok,token));
 	}
 
-	private void authenticate(String username, String password) throws Exception {
+	private void authenticate(String username, String password) throws DisabledException,BadCredentialsException {
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 		} catch (DisabledException e) {
-			throw new Exception("USER_DISABLED", e);
+			throw new DisabledException("USER_DISABLED", e);
 		} catch (BadCredentialsException e) {
-			throw new Exception("INVALID_CREDENTIALS", e);
+			throw new BadCredentialsException("INVALID_CREDENTIALS", e);
 		}
 	}
 	

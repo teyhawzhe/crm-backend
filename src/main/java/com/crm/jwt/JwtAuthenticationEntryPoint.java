@@ -27,6 +27,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
 		final String expired = (String) request.getAttribute("expired");
 
         if (expired!=null){
+        	//response.setHeader("Access-Control-Allow-Origin", "*");
         	response.sendError(HttpServletResponse.SC_UNAUTHORIZED,expired);
         }else{
         	response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");

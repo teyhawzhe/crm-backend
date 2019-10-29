@@ -14,7 +14,6 @@ public class ClazzToMap {
 			return null;
 		}
 		
-		
 		Map<String, Object> map = new HashMap<String, Object>();    
         Field[] declaredFields = obj.getClass().getDeclaredFields();    
         for (Field field : declaredFields) {    

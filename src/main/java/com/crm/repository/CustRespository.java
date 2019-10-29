@@ -1,8 +1,8 @@
 package com.crm.repository;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
@@ -17,6 +17,8 @@ public interface CustRespository extends JpaRepository<TbCust, TbCustPK>, JpaSpe
 	public long getTbCustSeq();
 	
 	@Query(nativeQuery = true, value = "select count(*) from tb_cust where PERSON_ID=:personId")
-	public long checkPersonID(String personId);
+	public long checkPersonIdByPersonId(String personId);
 	
+	@Query(nativeQuery = true, value = "select count(*) from tb_cust where PERSON_ID=:personId and CUST_ID !=:custId and REGION_ID !=:regionId")
+	public long checkPersonIdByPersonIdNotIn(String personId, String custId, String regionId);
 }

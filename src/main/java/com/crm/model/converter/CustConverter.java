@@ -5,7 +5,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import com.crm.common.AbstractModelMapper;
-import com.crm.model.dto.CustDto;
+import com.crm.common.Variable;
+import com.crm.model.dto.cust.CustDto;
 import com.crm.model.entity.TbCust;
 
 @Component
@@ -23,6 +24,8 @@ public class CustConverter extends AbstractModelMapper<TbCust, CustDto> {
 			source.setRegionId(source.getId().getRegionId());
 		}
 		
+		source.setRegionIdName(Variable.region.get(source.getId().getRegionId()));
+		source.setCustLevelName(Variable.custLevel.get(source.getCustLevel()));
 		
 		return model.map(source,CustDto.class);
 	}
