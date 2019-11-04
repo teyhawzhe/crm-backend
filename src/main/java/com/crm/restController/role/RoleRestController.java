@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.crm.common.HttpStatus;
+import com.crm.common.ResponseUtils;
 import com.crm.common.Result;
 import com.crm.model.entity.TbRole;
 import com.crm.service.role.RoleService;
@@ -26,10 +27,13 @@ public class RoleRestController {
 	@Autowired
 	private RoleService roleService;
 
+	@Autowired
+	private ResponseUtils responseUtils;
+	
 	@PostMapping("/add")
-	public ResponseEntity<Result<String>> add(@RequestBody @Valid RoleForm roleForm, BindingResult br)
+	public ResponseEntity<Result<?>> add(@RequestBody @Valid RoleForm roleForm, BindingResult br)
 			throws Exception {
-		if (br.hasErrors()) {
+		/*if (br.hasErrors()) {
 			StringBuilder sb = new StringBuilder();
 			for (ObjectError index : br.getAllErrors()) {
 				sb.append(index.getDefaultMessage() + "<br />");
@@ -38,13 +42,13 @@ public class RoleRestController {
 		}
 
 		roleService.save(roleForm);
-		return ResponseEntity.ok(new Result(HttpStatus.ok, "新增成功!"));
-
+		return ResponseEntity.ok(new Result(HttpStatus.ok, "新增成功!"));*/
+		return responseUtils.save(roleService, "save", roleForm, br);
 	}
 	
-	public ResponseEntity<Result<String>> update(@RequestBody @Valid RoleForm roleForm, BindingResult br)
+	public ResponseEntity<Result<?>> update(@RequestBody @Valid RoleForm roleForm, BindingResult br)
 			throws Exception {
-		if (br.hasErrors()) {
+		/*if (br.hasErrors()) {
 			StringBuilder sb = new StringBuilder();
 			for (ObjectError index : br.getAllErrors()) {
 				sb.append(index.getDefaultMessage() + "<br />");
@@ -53,8 +57,8 @@ public class RoleRestController {
 		}
 
 		roleService.save(roleForm);
-		return ResponseEntity.ok(new Result(HttpStatus.ok, "更新成功!"));
-
+		return ResponseEntity.ok(new Result(HttpStatus.ok, "更新成功!"));*/
+		return responseUtils.update(roleService, "save", roleForm, br);
 	}
 
 	@GetMapping("/list")
@@ -63,7 +67,7 @@ public class RoleRestController {
 		if (null == list) {
 			return ResponseEntity.ok(new Result(HttpStatus.ok, null, "查無資料!"));
 		}
-		return ResponseEntity.ok(new Result(HttpStatus.ok, list, "查詢成功!"));
+		return ResponseEntity.ok(new Result(HttpStatus.ok,"查詢成功!",list));
 	}
 
 }

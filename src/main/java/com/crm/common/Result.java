@@ -18,15 +18,15 @@ public class Result<T> implements Serializable {
 	 */
 	private static final long serialVersionUID = 196719912526387262L;
 
-	public Result(String status,T data){
+	public Result(String status,String message){
 		this.status=status;
-		this.data=data;
+		this.message=message;
 	}
 	
 	private String status;
 	
-	private T data;
-	
 	private String message;
+	
+	private T data;
 	
 }
