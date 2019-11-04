@@ -63,7 +63,7 @@ public class JwtAuthenticationController {
 		userInfo.setRoles(roles);
 		userInfo.setIntroduction("I hate U!");
 		userInfo.setAvatar("https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
-		return ResponseEntity.ok(new Result<UserInfo>(HttpStatus.ok,userInfo));
+		return ResponseEntity.ok(new Result<UserInfo>(HttpStatus.ok,"查詢成功!",userInfo));
 	}
 	
 	@PostMapping("/authenticate")
@@ -71,7 +71,7 @@ public class JwtAuthenticationController {
 		authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 		final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
 		final String token = jwtTokenUtil.generateToken(userDetails);
-		return ResponseEntity.ok(new Result<String>(HttpStatus.ok,token));
+		return ResponseEntity.ok(new Result<String>(HttpStatus.ok,"登入成功!",token));
 	}
 
 	private void authenticate(String username, String password) throws DisabledException,BadCredentialsException {
