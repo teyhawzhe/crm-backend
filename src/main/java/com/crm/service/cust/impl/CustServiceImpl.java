@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.crm.common.DataManager;
 import com.crm.common.PageResult;
 import com.crm.model.entity.TbCust;
 import com.crm.model.entity.TbCustPK;
@@ -22,8 +23,6 @@ import com.crm.model.queryForm.cust.CustForm;
 import com.crm.model.queryForm.cust.CustUpdateForm;
 import com.crm.repository.CustRespository;
 import com.crm.service.cust.CustService;
-import com.crm.sqlTools.GenSql1;
-import com.crm.sqlTools.GenSqlInterface;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,8 +33,6 @@ public class CustServiceImpl implements CustService {
 	@Autowired
 	private CustRespository custRespository;
 	
-	@Autowired
-	private GenSqlInterface<TbCust> gen;
 	
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -112,26 +109,7 @@ public class CustServiceImpl implements CustService {
 	@Override
 	public PageResult<List<Map<String, Object>>> getSqlMap(CustForm custForm, PageRequest pageRequest) {
 		// TODO Auto-generated method stub
-		gen.init(TbCust.class,pageRequest);
-		gen.isMapData();
-		gen.select("SELECT * FROM TB_CUST");
-		gen.like("CUST_ID", custForm.getCustId());
-		gen.equal("REGION_ID", custForm.getRegionId());
-		gen.equal("CUST_LEVEL", custForm.getCustLevel());
-		gen.equal("ENG_NAME", custForm.getEngName());
-		gen.equal("LOC_NAME", custForm.getLocName());
-		gen.equal("PERSON_TYPE", custForm.getPersonType());
-		gen.orderBy("CUST_ID");
-		gen.finish();
-		
-		gen.addParameter("CUST_ID1", "%"+custForm.getCustId());
-		gen.addParameter("REGION_ID", custForm.getRegionId());
-		gen.addParameter("CUST_LEVEL", custForm.getCustLevel());
-		gen.addParameter("ENG_NAME", custForm.getEngName());
-		gen.addParameter("LOC_NAME", custForm.getLocName());
-		gen.addParameter("PERSON_TYPE", custForm.getPersonType());
-
-		return  (PageResult<List<Map<String, Object>>>) gen.getPageResult();
+		return  null;
 	}
 	
 	@Transactional(readOnly = true)
@@ -157,7 +135,7 @@ public class CustServiceImpl implements CustService {
 		
 		log.info("result size = " +result.size());*/
 		
-		GenSql1 genSql1 = new GenSql1(entityManager);
+		DataManager genSql1 = new DataManager(entityManager);
 		genSql1.setModel(TbCust.class);
 		genSql1.setPageRequest(pageRequest);
 		genSql1.add("SELECT * FROM TB_CUST where 1=1 ");

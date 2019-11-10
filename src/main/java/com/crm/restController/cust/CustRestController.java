@@ -184,7 +184,6 @@ public class CustRestController {
 	@PreAuthorize("hasAuthority('USER')")
 	@PostMapping("/modify")
 	public ResponseEntity<?> modify(@RequestBody @Valid CustUpdateForm custUpdateForm, BindingResult br) {
-		log.info("modify =>" + custUpdateForm.toString());
 		if (br.hasErrors()) {
 			StringBuilder sb = new StringBuilder();
 			for (ObjectError index : br.getAllErrors()) {

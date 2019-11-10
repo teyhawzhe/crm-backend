@@ -19,4 +19,5 @@ public class FrontendPermissionPk implements Serializable {
 	
 	private String role;
 	
+	private int tier;
 }

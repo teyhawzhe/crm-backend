@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,13 +40,9 @@ public class PathRestController {
 	@Autowired
 	private PathService pathService;
 
-	@Autowired
-	private ResponseUtils responseUtils;
-	
 	@PostMapping("/add")
 	public ResponseEntity<Result<String>> add(@RequestBody @Valid PathForm pathForm, BindingResult br)
 			throws Exception {
-		log.info("pathForm " + pathForm.toString());
 		if (br.hasErrors() || (pathForm.getTier() == 2 && StringUtils.isBlank(pathForm.getParent()))) {
 			StringBuilder sb = new StringBuilder();
 			for (ObjectError index : br.getAllErrors()) {
@@ -62,10 +60,9 @@ public class PathRestController {
 		return ResponseEntity.ok(new Result<String>(HttpStatus.ok, "新增成功!"));
 	}
 
-	@PostMapping("/update")
-	public ResponseEntity<Result<?>> update(@RequestBody @Valid PathForm pathForm, BindingResult br)
-			throws Exception {
-		/*log.info("pathForm " + pathForm.toString());
+	@PutMapping("/update")
+	public ResponseEntity<Result<?>> update(@RequestBody @Valid PathForm pathForm, BindingResult br) throws Exception {
+		log.info("pathForm " + pathForm.toString());
 		if (br.hasErrors() || (pathForm.getTier() == 2 && StringUtils.isBlank(pathForm.getParent()))) {
 			StringBuilder sb = new StringBuilder();
 			for (ObjectError index : br.getAllErrors()) {
@@ -81,9 +78,7 @@ public class PathRestController {
 		}
 
 		pathService.update(pathForm);
-		return ResponseEntity.ok(new Result<String>(HttpStatus.ok, "更新成功!"));*/
-		
-		return responseUtils.update(pathService, "update", pathForm, br);
+		return ResponseEntity.ok(new Result<String>(HttpStatus.ok, "更新成功!"));
 
 	}
 
@@ -98,21 +93,20 @@ public class PathRestController {
 		}
 
 		if (list == null) {
-			return ResponseEntity.ok(new Result(HttpStatus.ok, null, "查無資料!"));
+			return ResponseEntity.ok(new Result(HttpStatus.ok,"查無資料!"));
 		}
 		return ResponseEntity.ok(new Result(HttpStatus.ok, "查詢成功!", list));
 	}
 
-	@PostMapping("/sort")
+	@PutMapping("/sort")
 	public ResponseEntity<Result<?>> listOrder(@RequestBody PathFormList list) throws Exception {
 
-		/*for (TbPath index : list.getList()) {
+		for (TbPath index : list.getList()) {
 			log.info(index.toString());
 		}
 
 		pathService.updateSort(list.getList());
-		return ResponseEntity.ok(new Result<String>(HttpStatus.ok, "排序成功!"));*/
-		return responseUtils.update(pathService, "updateSort", list.getList());
+		return ResponseEntity.ok(new Result<String>(HttpStatus.ok, "排序成功!"));
 
 	}
 
@@ -125,7 +119,15 @@ public class PathRestController {
 	@GetMapping("/allPath")
 	public ResponseEntity<Result<String>> allPath() throws JsonProcessingException {
 		JSONArray paths = pathService.getAllPath();
+		
 		return ResponseEntity.ok(new Result(HttpStatus.ok, "查詢成功!", paths.toString()));
 	}
 
+	@DeleteMapping("/delete")
+	public ResponseEntity<Result<String>> delete(@RequestBody PathForm pathForm) throws Exception{
+		pathService.delete(pathForm);
+		return ResponseEntity.ok(new Result(HttpStatus.ok, "刪除成功!"));
+	}
+	
+	
 }

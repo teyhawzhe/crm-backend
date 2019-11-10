@@ -2,6 +2,7 @@ package com.crm.model.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -30,7 +31,8 @@ public class UserProfile implements Serializable {
 	@Id
 	private String username;
 	
+	@Column(updatable = false)
 	private String createDate;
-	
+	@Column(updatable = false)
 	private String creater;
 }

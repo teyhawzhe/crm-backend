@@ -12,6 +12,7 @@ import com.crm.model.entity.TbPathPk;
 import com.crm.model.queryForm.admin.path.PathForm;
 import com.crm.repository.PathRepository;
 import com.crm.service.path.PathService;
+import com.crm.utils.UserProfileUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,8 +40,7 @@ public class PathServiceImpl implements PathService {
 			} 
 			pathRepository.save(tbPath);
 		} catch (Exception ex) {
-			log.debug(ex.getLocalizedMessage());
-			throw new Exception("新增失敗!");
+			throw new Exception("新增失敗!",ex);
 		}
 	}
 
@@ -57,7 +57,7 @@ public class PathServiceImpl implements PathService {
 			id.setTier(pathForm.getTier());
 			tbPath.setId(id);
 
-			if (pathForm.getTier() > 1) {
+			if (pathForm.getTier() == 0) {
 				pathRepository.updateMainMenu(tbPath.getId().getPath(), tbPath.getTitle(), tbPath.getIcon(),
 						pathForm.getOldPath(), pathForm.getOldTitle(), pathForm.getOldIcon());
 			} else {
@@ -68,8 +68,7 @@ public class PathServiceImpl implements PathService {
 			}
 
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new Exception();
+			throw new Exception("更新失敗!",ex);
 		}
 	}
 
@@ -93,8 +92,7 @@ public class PathServiceImpl implements PathService {
 		try {
 			pathRepository.saveAll(tbPath);
 		} catch (Exception e) {
-			e.printStackTrace();
-			throw new Exception();
+			throw new Exception("更新失敗!",e);
 		}
 
 	}
@@ -106,11 +104,12 @@ public class PathServiceImpl implements PathService {
 		return pathRepository.getPathByParent(2,parent);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public JSONArray getPath() {
 		// TODO Auto-generated method stub
 		 
-		List<TbPath> oneTier = pathRepository.getOneTierPath(1);
+		List<TbPath> oneTier = pathRepository.getOneTierPath(1,UserProfileUtils.getRoles());
 		JSONArray jsonArray = new JSONArray();
 		if (null != oneTier) {
 
@@ -133,7 +132,7 @@ public class PathServiceImpl implements PathService {
 	}
 	
 	public JSONObject getChiledrenPath(int tier,String parent,JSONObject parentObject){
-		List<TbPath> twoTier = pathRepository.getPathByParent(tier,parent);
+		List<TbPath> twoTier = pathRepository.getPathByParent(tier,parent,UserProfileUtils.getRoles());
 		if(null==twoTier || 0 ==twoTier.size() ) {
 			return parentObject;
 		}
@@ -153,39 +152,52 @@ public class PathServiceImpl implements PathService {
 		return parentObject;
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public JSONArray getAllPath() {
 		// TODO Auto-generated method stub
 		List<TbPath> oneTier = pathRepository.getOneTierPath(1);
 		JSONArray jsonArray = new JSONArray();
 		if (null != oneTier) {
-
 			for (TbPath index : oneTier) {
 				JSONObject path = new JSONObject();
-				path.put("path", index.getId().getPath());
-				path.put("title",index.getTitle());
-				JSONObject fullPath = new JSONObject();
-				fullPath.put("path", index.getId().getPath());
-				fullPath.put("title", index.getTitle());
+				path.put("id", index.getId().getPath()+"&"+index.getId().getTier());
+				path.put("label",index.getTitle());
+				this.getFullPath(index.getId().getPath(),index.getId().getTier()+1,path);
 				jsonArray.put(path);
-				this.getFullPath(index.getId().getTier()+1,index.getId().getPath(),fullPath,jsonArray);
 			}
-
 		}
 		return jsonArray;
 	}
-	public void getFullPath(int tier,String parent,JSONObject fullPath,JSONArray jsonArray) {
-		List<TbPath> twoTier = pathRepository.getPathByParent(tier,parent);
-		if(null==twoTier || 0 ==twoTier.size() ) {
-			
-		}else {
-			for(TbPath index : twoTier) {	 
+	public void getFullPath(String pathParent , int tier,JSONObject parent) {
+		List<TbPath> childrenPath  = pathRepository.getPathByParent(tier,pathParent);
+		
+		if(!childrenPath.isEmpty()) {
+			JSONArray allPath = new JSONArray();
+			for(TbPath index : childrenPath) {	 
 				JSONObject path = new JSONObject();
-				path.put("path", fullPath.get("path")+"/"+index.getId().getPath());
-				path.put("title", fullPath.get("title")+"/"+index.getTitle());
-				jsonArray.put(path);
-				this.getFullPath(index.getId().getTier()+1,index.getId().getPath(),path,jsonArray);
+				path.put("id", index.getId().getPath()+"&"+index.getId().getTier());
+				path.put("label",index.getTitle());
+				this.getFullPath(index.getId().getPath(),index.getId().getTier()+1,path);
+				allPath.put(path);
+				parent.put("children", allPath);
 			}
-		}	
+		}
+		
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public void delete(PathForm pathForm) throws Exception {
+		// TODO Auto-generated method stub
+		log.info("pathForm " + pathForm.toString());	
+		try {
+			pathRepository.deletePath(pathForm.getPath(), pathForm.getTier());
+			if(pathForm.getTier()==1) {
+				pathRepository.deleteAllSubPath(pathForm.getParent());
+			}
+		}catch(Exception ex) {
+			throw new Exception("刪除失敗!",ex);
+		}
 	}
 }

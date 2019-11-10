@@ -1,12 +1,12 @@
 package com.crm.jwt;
 
 import java.io.Serializable;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -23,8 +23,6 @@ public class JwtTokenUtil implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -9144177202888900937L;
-
-	private Base64 base64 = new Base64();
 
 	public static final long JWT_TOKEN_VALIDITY = 2*60*60;
 	
@@ -48,7 +46,8 @@ public class JwtTokenUtil implements Serializable {
 
 	// for retrieveing any information from token we will need the secret key
 	private Claims getAllClaimsFromToken(String token){
-		return Jwts.parser().setSigningKey(base64.decode(secret)).parseClaimsJws(token).getBody();
+		Base64.Decoder decoder = Base64.getDecoder();
+		return Jwts.parser().setSigningKey(decoder.decode(secret)).parseClaimsJws(token).getBody();
 	}
 
 	// check if the token has expired
@@ -70,13 +69,13 @@ public class JwtTokenUtil implements Serializable {
 	// Serialization(https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41#section-3.1)
 	// compaction of the JWT to a URL-safe string
 	private String doGenerateToken(Map<String, Object> claims, UserDetails userDetails) {
-		
+		Base64.Decoder decoder = Base64.getDecoder();
 		String[] authoritiesArray = userDetails.getAuthorities().stream()
 				.map(a -> a.getAuthority()).toArray(String[]::new);
 		
 		return Jwts.builder().setClaims(claims).setSubject(userDetails.getUsername()).setIssuedAt(new Date(System.currentTimeMillis()))
 				.claim("roles", authoritiesArray).setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
-				.signWith(SignatureAlgorithm.HS512, base64.decode(secret)).compact();
+				.signWith(SignatureAlgorithm.HS512, decoder.decode(secret)).compact();
 	}
 
 	// validate token

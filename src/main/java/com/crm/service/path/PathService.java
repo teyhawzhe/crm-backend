@@ -23,4 +23,7 @@ public interface PathService {
 	public JSONArray getPath();
 	
 	public JSONArray getAllPath();
+	
+	public void delete(PathForm pathForm) throws Exception;
+	
 }

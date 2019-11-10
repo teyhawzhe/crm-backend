@@ -1,4 +1,4 @@
-package com.crm.sqlTools;
+package com.crm.common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,16 +14,13 @@ import org.hibernate.transform.Transformers;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
-import com.crm.common.HttpStatus;
-import com.crm.common.PageResult;
-
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
 @Data
-public class GenSql1 {
+public class DataManager {
 
 	private EntityManager entityManager;
 
@@ -37,7 +34,7 @@ public class GenSql1 {
 	private Query queryCount;
 	private Class<?> clazz;
 
-	public GenSql1(EntityManager entityManager) {
+	public DataManager(EntityManager entityManager) {
 		this.sql = new StringBuilder();
 		this.parameters = new HashMap<String, Object>();
 		this.pagable = null;

@@ -22,7 +22,7 @@ import com.crm.jwt.filter.JwtRequestFilter;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@Order(-1)
+//@Order(-1)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired

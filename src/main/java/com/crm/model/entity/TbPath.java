@@ -32,6 +32,6 @@ public class TbPath implements Serializable {
 	@Column(insertable = false)
 	private int sort;
 	private String parent;
-	private String pathstr;
+	
 	
 }
