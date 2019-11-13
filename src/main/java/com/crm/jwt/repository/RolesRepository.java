@@ -19,4 +19,9 @@ public interface RolesRepository extends JpaRepository<Roles, RolesPk> {
 	@Query(nativeQuery = true , value = "DELETE ROLES WHERE USERNAME = :username")
 	public void delete(@Param("username") String username);
 	
+	@Modifying
+	@Query(nativeQuery = true , value = "DELETE ROLES WHERE USERNAME = :username and ROLE NOT IN (:role)")
+	public void deleteUsernameAndExcludeRole(@Param("username") String username,@Param("role") List<String> role);
+	
+	
 }

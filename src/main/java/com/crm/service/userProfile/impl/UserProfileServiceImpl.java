@@ -138,9 +138,7 @@ public class UserProfileServiceImpl implements UserProfileService {
 			userProfile.setUsername(userRegisterForm.getUsername());
 			userProfile.setName(userRegisterForm.getName());
 			userProfile.setImage(userRegisterForm.getImage());
-			
 			userProfileRepository.save(userProfile);
-			
 			List<Roles> rolesList = new ArrayList<Roles>();	
 			for (String index : userRegisterForm.getRoles()) {
 				RolesPk id = new RolesPk();
@@ -150,8 +148,8 @@ public class UserProfileServiceImpl implements UserProfileService {
 				roles.setId(id);
 				rolesList.add(roles);
 			}
-			rolesRepository.saveAll(rolesList);
-			
+			rolesRepository.deleteUsernameAndExcludeRole(userRegisterForm.getUsername(), userRegisterForm.getRoles());
+			rolesRepository.saveAll(rolesList);	
 		}catch(Exception ex) {
 			throw new Exception("更新失敗!",ex);
 		}
