@@ -15,7 +15,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@ToString
 public class UserRegisterForm implements Serializable {
 
 	/**

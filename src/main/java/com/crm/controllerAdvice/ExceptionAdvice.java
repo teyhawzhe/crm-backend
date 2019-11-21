@@ -1,5 +1,8 @@
 package com.crm.controllerAdvice;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -17,40 +20,40 @@ public class ExceptionAdvice{
 
 	@ExceptionHandler(value = IllegalArgumentException.class)
 	public Result<String> errorHandle(IllegalArgumentException ex){
-		log.info("ex = " + ex.getLocalizedMessage());
-		log.info("ex = " + ex.getMessage());
-		ex.printStackTrace();
+		StringWriter stack = new StringWriter();
+		ex.printStackTrace(new PrintWriter(stack));
+		log.error(stack.toString());
 		return new Result<String>(HttpStatus.exception,ex.getLocalizedMessage());	
 	}
 	@ExceptionHandler(value = Exception.class)
 	public Result<String> errorHandle(Exception ex){
-		log.info("ex = " + ex.getLocalizedMessage());
-		log.info("ex = " + ex.getMessage());
-		ex.printStackTrace();
+		StringWriter stack = new StringWriter();
+		ex.printStackTrace(new PrintWriter(stack));
+		log.error(stack.toString());
 		return new Result<String>(HttpStatus.exception,ex.getLocalizedMessage());	
 	}
 	
 	@ExceptionHandler(value = BadCredentialsException.class)
 	public Result<String> errorHandle(BadCredentialsException ex){
-		log.info("ex = " + ex.getLocalizedMessage());
-		log.info("ex = " + ex.getMessage());
-		ex.printStackTrace();
+		StringWriter stack = new StringWriter();
+		ex.printStackTrace(new PrintWriter(stack));
+		log.error(stack.toString());
 		return new Result<String>(HttpStatus.exception,ex.getLocalizedMessage());	
 	}
 	
 	@ExceptionHandler(value = DisabledException.class)
 	public Result<String> errorHandle(DisabledException ex){
-		log.info("ex = " + ex.getLocalizedMessage());
-		log.info("ex = " + ex.getMessage());
-		ex.printStackTrace();
+		StringWriter stack = new StringWriter();
+		ex.printStackTrace(new PrintWriter(stack));
+		log.error(stack.toString());
 		return new Result<String>(HttpStatus.exception,ex.getLocalizedMessage());	
 	}
 	
 	@ExceptionHandler(value = AccessDeniedException.class)
 	public Result<String> errorHandle(AccessDeniedException ex){
-		log.info("ex = " + ex.getLocalizedMessage());
-		log.info("ex = " + ex.getMessage());
-		ex.printStackTrace();
+		StringWriter stack = new StringWriter();
+		ex.printStackTrace(new PrintWriter(stack));
+		log.error(stack.toString());
 		return new Result<String>(HttpStatus.exception,"權限不足!");	
 	}
 	

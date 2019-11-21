@@ -3,8 +3,8 @@ package com.crm.model.entity;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,26 +13,25 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
+@ToString
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @EqualsAndHashCode
-public class UserProfile implements Serializable {
+public class SettingPath implements Serializable {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9150442751399532994L;
+	private static final long serialVersionUID = 8606648692914694053L;
 
-	private String image;
+	@EmbeddedId
+	private SettingPathPk id;
+	private String title;
+	private String icon;
+	@Column(insertable = false)
+	private int sort;
+	private String parent;
 	
-	private String name;
-	@Id
-	private String username;
 	
-	@Column(updatable = false)
-	private String createDate;
-	@Column(updatable = false)
-	private String creater;
 }
