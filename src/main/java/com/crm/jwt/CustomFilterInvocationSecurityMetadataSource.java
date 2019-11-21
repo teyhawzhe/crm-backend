@@ -13,8 +13,8 @@ import org.springframework.security.web.access.intercept.FilterInvocationSecurit
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 
-import com.crm.model.entity.ApiPermission;
-import com.crm.service.apiPermission.ApiPermissionService;
+import com.crm.model.entity.SettingApiPermission;
+import com.crm.service.setting.api.permission.ApiPermissionService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,7 +30,6 @@ public class CustomFilterInvocationSecurityMetadataSource implements FilterInvoc
 	@Autowired
 	private ApiPermissionService apiPermissionService;
 
-	
 	@Override
 	public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
 		// TODO Auto-generated method stub
@@ -39,11 +38,9 @@ public class CustomFilterInvocationSecurityMetadataSource implements FilterInvoc
 		if(url.contains("?")) {
 			url = url.substring(0,url.indexOf("?"));;
 		}
-		log.info(url);
-		List<ApiPermission> apiList = apiPermissionService.findAll();
+		List<SettingApiPermission> apiList = apiPermissionService.findAll();
 		List<String> urlRoles = new ArrayList<String>();
-		for (ApiPermission index : apiList) {
-			
+		for (SettingApiPermission index : apiList) {
 			if (antPathMatcher.match(index.getId().getApi(), url)) {
 				log.info(index.toString());
 				urlRoles.add(index.getId().getRole());

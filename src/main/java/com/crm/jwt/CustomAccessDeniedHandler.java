@@ -26,7 +26,6 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 		ObjectNode json = mapper.createObjectNode();
 		json.put("status", HttpStatus.exception.toString());
 		json.put("message", accessDeniedException.getLocalizedMessage());
-		log.info("----------------------------");
 		response.setStatus(HttpServletResponse.SC_OK);
 		response.setContentType("application/json;charset=UTF-8");
 		response.getWriter().write(json.toString());

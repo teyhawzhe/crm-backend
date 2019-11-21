@@ -28,12 +28,10 @@ public class CustomAccessDecisionManager implements AccessDecisionManager {
 		while (ite.hasNext()) {
 			ConfigAttribute ca = ite.next();
 			String role = ca.getAttribute();
-			log.info("------------ " + role);
 			if (role.equals("ANONYMOUS")) {
 				role = "ROLE_" + ca.getAttribute();
 			}
 			for (GrantedAuthority ga : authentication.getAuthorities()) {
-				log.info("------------ga.getAuthority() " + ga.getAuthority());
 				if (ga.getAuthority().equals(role)) {
 					return;
 				}

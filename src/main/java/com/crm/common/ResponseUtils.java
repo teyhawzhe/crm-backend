@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 
-import com.crm.model.entity.TbPath;
-import com.crm.service.path.PathService;
+import com.crm.model.entity.SettingPath;
+import com.crm.service.setting.path.SettingPathService;
 
 @Component
 public class ResponseUtils {

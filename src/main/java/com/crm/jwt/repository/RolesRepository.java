@@ -13,7 +13,9 @@ import com.crm.jwt.model.RolesPk;
 
 @Repository
 public interface RolesRepository extends JpaRepository<Roles, RolesPk> {
-	public List<Roles> findAllByIdUsername(String username);
+	
+	@Query(nativeQuery = true , value = "SELECT ROLES.* FROM ROLES LEFT JOIN SETTING_ROLE ON SETTING_ROLE.ROLE =  ROLES.ROLE WHERE SETTING_ROLE.STATUS=1 AND ROLES.USERNAME = :username")
+	public List<Roles> findAllByIdUsername(@Param("username") String username);
 	
 	@Modifying
 	@Query(nativeQuery = true , value = "DELETE ROLES WHERE USERNAME = :username")
