@@ -26,6 +26,7 @@ import com.crm.model.queryForm.setting.userRegister.UserRegisterForm;
 import com.crm.repository.UserProfileRepository;
 import com.crm.service.userProfile.UserProfileService;
 import com.crm.utils.LoginUser;
+import com.crm.utils.UserProfileUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -153,6 +154,13 @@ public class UserProfileServiceImpl implements UserProfileService {
 		}catch(Exception ex) {
 			throw new Exception("更新失敗!",ex);
 		}
+	}
+	@Transactional(readOnly = true)
+	@Override
+	public String getImage() {
+		// TODO Auto-generated method stub
+		UserProfile userProfile = userProfileRepository.getOne(UserProfileUtils.getUsername());
+		return userProfile.getImage();
 	}
 
 }

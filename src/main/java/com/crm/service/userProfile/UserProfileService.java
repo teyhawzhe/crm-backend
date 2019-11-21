@@ -10,4 +10,5 @@ public interface UserProfileService {
 	public List<Map<String,Object>> getList(Map<String,Object> params);
 	public void delete(String username) throws Exception;
 	public void update(UserRegisterForm userRegisterForm) throws Exception;
+	public String getImage();
 }
