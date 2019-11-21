@@ -14,11 +14,15 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.crm.common.HttpStatus;
 import com.crm.jwt.JwtTokenUtil;
 import com.crm.jwt.JwtUserDetailsService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
@@ -43,18 +47,41 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 		if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
 			jwtToken = requestTokenHeader.substring(7);
 			try {
-				username = jwtTokenUtil.getUsernameFromToken(jwtToken);//INVALID_CREDENTIALS
+				username = jwtTokenUtil.getUsernameFromToken(jwtToken);// INVALID_CREDENTIALS
 			} catch (IllegalArgumentException e) {
 				log.info("Unable to get JWT Token");
 			} catch (ExpiredJwtException e) {
 				log.info("JWT Token has expired");
-				request.setAttribute("expired","expired");
+				ObjectMapper mapper = new ObjectMapper();
+				ObjectNode json = mapper.createObjectNode();
+				json.put("status", HttpStatus.exception);
+				json.put("message", "TOKEN_EXPIRED");
+				response.setStatus(HttpServletResponse.SC_OK);
+				response.setContentType("application/json;charset=UTF-8");
+				response.getWriter().write(json.toString());
+				response.getWriter().flush();
+				response.getWriter().close();
+				return;
+			} catch (MalformedJwtException e) {
+				ObjectMapper mapper = new ObjectMapper();
+				ObjectNode json = mapper.createObjectNode();
+				json.put("status", HttpStatus.exception);
+				json.put("message", e.getMessage());
+				response.setStatus(HttpServletResponse.SC_OK);
+				response.setContentType("application/json;charset=UTF-8");
+				response.getWriter().write(json.toString());
+				response.getWriter().flush();
+				response.getWriter().close();
+				return;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		} else {
 			logger.warn("JWT Token does not begin with Bearer String");
 		}
 
-		//取得token
+		// 取得token
 		if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 			UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(username);
 			// if token is valid configure Spring Security to manually set

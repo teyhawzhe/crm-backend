@@ -9,6 +9,7 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.crm.common.AttemptException;
 import com.crm.common.HttpStatus;
 import com.crm.common.Result;
 
@@ -55,6 +56,13 @@ public class ExceptionAdvice{
 		ex.printStackTrace(new PrintWriter(stack));
 		log.error(stack.toString());
 		return new Result<String>(HttpStatus.exception,"權限不足!");	
+	}
+	@ExceptionHandler(value = AttemptException.class)
+	public Result<String> errorHandle(AttemptException ex) {
+		StringWriter stack = new StringWriter();
+		ex.printStackTrace(new PrintWriter(stack));
+		log.error(stack.toString());
+		return new Result<String>(HttpStatus.exception, "LOGIN_ATTEMPT",ex.getLocalizedMessage());
 	}
 	
 }

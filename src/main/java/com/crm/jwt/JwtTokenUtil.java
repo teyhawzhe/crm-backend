@@ -14,7 +14,9 @@ import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
 
 @Component
 public class JwtTokenUtil implements Serializable {
@@ -46,8 +48,16 @@ public class JwtTokenUtil implements Serializable {
 
 	// for retrieveing any information from token we will need the secret key
 	private Claims getAllClaimsFromToken(String token){
-		Base64.Decoder decoder = Base64.getDecoder();
-		return Jwts.parser().setSigningKey(decoder.decode(secret)).parseClaimsJws(token).getBody();
+		try {
+			Base64.Decoder decoder = Base64.getDecoder();
+			return Jwts.parser().setSigningKey(decoder.decode(secret)).parseClaimsJws(token).getBody();
+		} catch (SignatureException e) {
+			throw new SignatureException("TOKEN簽章錯誤!");
+		} catch (MalformedJwtException e) {
+			throw new MalformedJwtException("TOKEN格式錯誤!");
+		}catch (ExpiredJwtException e) {
+			throw new ExpiredJwtException(null,null,"TOKEN已經過期!");
+		}
 	}
 
 	// check if the token has expired

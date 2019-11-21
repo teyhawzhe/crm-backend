@@ -33,8 +33,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
 		
-		Users users = usersRepository.getOne(username);
-		
+		Users users = usersRepository.findUser(username);
 		if (null!=users) {
 			return new User(users.getUsername(),users.getPassword(),users.isEnable(),true,true,true,getRoles(username));
 		} else {
