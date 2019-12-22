@@ -27,6 +27,8 @@ public class CustomFilterInvocationSecurityMetadataSource implements FilterInvoc
 	private final String []exeludePaths = {"/authenticate","/getUserInfo","/user/logout"};
 	private final List<String> exeludePathList = Arrays.asList(exeludePaths);
 	
+	private final String []adminPaths = {"/actuator","/instances"};
+	
 	@Autowired
 	private ApiPermissionService apiPermissionService;
 
@@ -54,6 +56,13 @@ public class CustomFilterInvocationSecurityMetadataSource implements FilterInvoc
 		if(exeludePathList.contains(url)) {
 			return null;
 		}
+		
+		for(String ignorePath : adminPaths) {
+			if(url.startsWith(ignorePath)) {
+				return null;
+			}
+		}
+		
 		return SecurityConfig.createList("BASIC");
 	}
 

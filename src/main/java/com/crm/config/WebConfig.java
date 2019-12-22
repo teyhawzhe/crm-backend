@@ -7,6 +7,7 @@ import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import com.crm.interceptor.LogRequestInterceptor;
 
@@ -26,7 +27,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
 	@Override
 	protected void addCorsMappings(CorsRegistry registry) {
 		// TODO Auto-generated method stub
-		registry.addMapping("/**").allowedOrigins("*").allowedMethods("*").allowedHeaders("*").allowCredentials(true);
+		registry.addMapping("/**").allowedOrigins("*").allowedMethods("*").allowedHeaders("*").allowCredentials(true).exposedHeaders("Content-disposition","Filename");
 	}
 
 	@Bean
@@ -39,6 +40,11 @@ public class WebConfig extends WebMvcConfigurationSupport {
 		return loggingFilter;
 	}
 	
-
+//	@Bean("handlerMap")
+//	public RequestMappingHandlerMapping requestMappingHandlerMapping() {
+//		RequestMappingHandlerMapping mapping = new RequestMappingHandlerMapping();
+//		// add properties here
+//		return mapping;
+//	}
 
 }

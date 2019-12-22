@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -35,8 +36,8 @@ public class SettingApiPermissionRestController {
 	
 private final String []excludePath = {"/authenticate"};
 	
-	@Autowired
-	private RequestMappingHandlerMapping handlerMap;
+	
+	private RequestMappingHandlerMapping handlerMap = new RequestMappingHandlerMapping();
 
 	@Autowired
 	private ApiPermissionService apiPermissionService;
