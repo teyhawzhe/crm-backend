@@ -19,7 +19,7 @@ public class EmailRestController {
 	
 	@PostMapping
 	public ResponseEntity<Result<String>> sendMail(){
-		emailUtils.sendSimpleEmail("", "測試", "測試中");
+		emailUtils.sendSimpleEmail("loviusc@gmail.com", "測試", "測試中");
 		return ResponseEntity.ok(new Result<String>(HttpStatus.ok,"發送email"));
 	}
 	
