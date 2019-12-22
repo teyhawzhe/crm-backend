@@ -24,10 +24,13 @@ public class CustomFilterInvocationSecurityMetadataSource implements FilterInvoc
 
 	private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
-	private final String []exeludePaths = {"/authenticate","/getUserInfo","/user/logout"};
+	private final String []exeludePaths = {"/authenticate","/user/logout"};
 	private final List<String> exeludePathList = Arrays.asList(exeludePaths);
 	
-	private final String []adminPaths = {"/actuator","/instances"};
+	private final String[] adminPaths = { "/actuator", "/instances" };
+
+	private final String[] webSocketPaths = { "/myUrl" };
+
 	
 	@Autowired
 	private ApiPermissionService apiPermissionService;
@@ -57,12 +60,12 @@ public class CustomFilterInvocationSecurityMetadataSource implements FilterInvoc
 			return null;
 		}
 		
-		for(String ignorePath : adminPaths) {
-			if(url.startsWith(ignorePath)) {
+		// 排除web socket 角色驗證
+		for (String ignorePath : webSocketPaths) {
+			if (url.startsWith(ignorePath)) {
 				return null;
 			}
 		}
-		
 		return SecurityConfig.createList("BASIC");
 	}
 
