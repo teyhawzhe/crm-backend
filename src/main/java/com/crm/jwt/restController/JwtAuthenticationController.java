@@ -31,6 +31,7 @@ import com.crm.model.entity.LoginAttempt;
 import com.crm.service.login.attempt.LoginAttemptService;
 import com.crm.service.login.history.LoginHistoryService;
 import com.crm.service.userProfile.UserProfileService;
+import com.crm.utils.UserProfileUtils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -66,16 +67,10 @@ public class JwtAuthenticationController {
 	}
 
 	@GetMapping("/getUserInfo")
-	public ResponseEntity<Result<UserInfo>> getToken(@RequestParam("token") String token) {
-		Base64.Decoder decoder = Base64.getDecoder();
-		Claims claims = Jwts.parser().setSigningKey(decoder.decode(secret)).parseClaimsJws(token.replace("Bearer ", ""))
-				.getBody();
-
-		List<String> roles = (List<String>) claims.get("roles");
-
+	public ResponseEntity<Result<UserInfo>> getToken() {
 		UserInfo userInfo = new UserInfo();
-		userInfo.setName(claims.getSubject());
-		userInfo.setRoles(roles);
+		userInfo.setName(UserProfileUtils.getUsername());
+		userInfo.setRoles(UserProfileUtils.getRoles());
 		userInfo.setAvatar(userProfileService.getImage());
 		return ResponseEntity.ok(new Result<UserInfo>(HttpStatus.ok, "查詢成功!", userInfo));
 	}
